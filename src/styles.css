@@ -79,11 +79,28 @@ h3 {
 
 .brand-logo,
 .footer-logo {
+    position: relative;
     display: grid;
     flex: 0 0 auto;
     place-items: center;
     overflow: hidden;
     background: #fff;
+}
+
+.brand-logo::before,
+.footer-logo::before {
+    color: var(--ink);
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.brand-logo::before {
+    content: "五";
+}
+
+.footer-logo::before {
+    color: #fff;
+    content: "BT";
 }
 
 .brand-logo {
@@ -94,6 +111,8 @@ h3 {
 
 .site-logo,
 .partner-logo {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -148,6 +167,12 @@ h3 {
     height: 100%;
     object-fit: cover;
     object-position: center center;
+}
+
+.hero-image {
+    background:
+        radial-gradient(circle at 68% 32%, rgba(216, 38, 47, 0.5), transparent 30%),
+        linear-gradient(135deg, #191a1e 0%, #101113 48%, #53151a 100%);
 }
 
 .hero-shade {

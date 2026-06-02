@@ -12,8 +12,8 @@ const app = document.querySelector("#app");
  */
 async function bootstrap() {
     try {
-        const images = await loadPageImages(siteContent.assets);
-        renderPage(images);
+        renderPage();
+        mountImagesAsync(siteContent.assets);
     } catch (error) {
         logger.error("官网初始化失败", error);
         renderFallback();
@@ -21,42 +21,11 @@ async function bootstrap() {
 }
 
 /**
- * 异步加载页面需要的图片资源。
- *
- * @param {Record<string, { path: string, alt: string }>} assets
- * 图片配置。
- * @returns {Promise<Record<string, HTMLImageElement>>}
- * 已加载图片映射。
- */
-async function loadPageImages(assets) {
-    const entries = Object.entries(assets);
-    const loadedEntries = await Promise.all(entries.map(loadAssetEntry));
-
-    return Object.fromEntries(loadedEntries);
-}
-
-/**
- * 加载单个图片配置项。
- *
- * @param {[string, { path: string, alt: string }]} entry
- * 图片键值配置。
- * @returns {Promise<[string, HTMLImageElement]>}
- * 图片键与加载后的元素。
- */
-async function loadAssetEntry(entry) {
-    const [key, asset] = entry;
-    const image = await loadImage(asset.path, asset.alt);
-
-    return [key, image];
-}
-
-/**
  * 渲染完整页面结构。
  *
- * @param {Record<string, HTMLImageElement>} images 已加载图片资源。
  * @returns {void}
  */
-function renderPage(images) {
+function renderPage() {
     const content = siteContent;
 
     app.innerHTML = `
@@ -157,7 +126,7 @@ function renderPage(images) {
         </footer>
     `;
 
-    mountImages(images);
+    app.classList.add("is-ready");
 }
 
 /**
@@ -236,35 +205,42 @@ function renderContacts(contacts) {
 }
 
 /**
- * 把异步加载完成的图片挂载到页面中。
+ * 异步挂载页面图片，不阻塞首屏内容显示。
  *
- * @param {Record<string, HTMLImageElement>} images
- * 已加载图片资源。
+ * @param {Record<string, { path: string, alt: string }>} assets
+ * 图片资源配置。
  * @returns {void}
  */
-function mountImages(images) {
-    appendClonedImage(".brand-logo", images.logo, "site-logo");
-    appendClonedImage(".hero-image", images.hero, "hero-img");
-    appendClonedImage(".footer-logo", images.partnerLogo, "partner-logo");
+function mountImagesAsync(assets) {
+    loadAndMountImage(".brand-logo", assets.logo, "site-logo");
+    loadAndMountImage(".hero-image", assets.hero, "hero-img");
+    loadAndMountImage(".footer-logo", assets.partnerLogo, "partner-logo");
 }
 
 /**
- * 克隆并挂载图片元素，避免同一图片节点被移动。
+ * 加载并挂载单个图片，失败时保留占位内容。
  *
  * @param {string} selector
  * 容器选择器。
- * @param {HTMLImageElement} image
- * 图片元素。
+ * @param {{ path: string, alt: string }} asset
+ * 图片资源配置。
  * @param {string} className
  * 图片类名。
- * @returns {void}
+ * @returns {Promise<void>}
+ * 图片挂载任务。
  */
-function appendClonedImage(selector, image, className) {
+async function loadAndMountImage(selector, asset, className) {
     const target = document.querySelector(selector);
-    const clonedImage = image.cloneNode();
 
-    clonedImage.className = className;
-    target.append(clonedImage);
+    try {
+        const image = await loadImage(asset.path, asset.alt);
+
+        image.className = className;
+        target.classList.add("is-loaded");
+        target.append(image);
+    } catch {
+        target.classList.add("is-failed");
+    }
 }
 
 /**
