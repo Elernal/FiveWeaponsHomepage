@@ -11,13 +11,13 @@ const app = document.querySelector("#app");
  * @returns {Promise<void>} 页面启动任务。
  */
 async function bootstrap() {
-    try {
-        renderPage();
-        mountImagesAsync(siteContent.assets);
-    } catch (error) {
-        logger.error("官网初始化失败", error);
-        renderFallback();
-    }
+  try {
+    renderPage();
+    mountImagesAsync(siteContent.assets);
+  } catch (error) {
+    logger.error("官网初始化失败", error);
+    renderFallback();
+  }
 }
 
 /**
@@ -26,9 +26,9 @@ async function bootstrap() {
  * @returns {void}
  */
 function renderPage() {
-    const content = siteContent;
+  const content = siteContent;
 
-    app.innerHTML = `
+  app.innerHTML = `
         <header class="site-header">
             <a class="brand" href="#top" aria-label="${content.title}">
                 <span class="brand-logo"></span>
@@ -49,16 +49,18 @@ function renderPage() {
                 </div>
                 <div class="hero-content">
                     <p class="eyebrow">${content.hero.eyebrow}</p>
-                    <h1>${content.title}</h1>
-                    <p class="hero-subtitle">${content.hero.title}</p>
-                    <p class="hero-summary">${content.hero.summary}</p>
-                    <div class="hero-actions">
-                        <a class="button primary" href="#join">${content.hero.primaryCta}</a>
-                        <a class="button secondary" href="#schedule">
-                            ${content.hero.secondaryCta}
-                        </a>
+                    <img class="hero-img hero-content-img" src="images/title.png" alt="${content.title}" />
+                    <div class="hero-content-inner">
+                        <p class="hero-subtitle">${content.hero.title}</p>
+                        <p class="hero-summary">${content.hero.summary}</p>
+                        <dl class="hero-stats">${renderStats(content.hero.stats)}</dl>
+                        <div class="hero-actions">
+                            <a class="button primary" href="#join">${content.hero.primaryCta}</a>
+                            <a class="button secondary" href="#schedule">
+                                ${content.hero.secondaryCta}
+                            </a>
+                        </div>
                     </div>
-                    <dl class="hero-stats">${renderStats(content.hero.stats)}</dl>
                 </div>
             </section>
             <section class="section intro-section" aria-labelledby="intro-title">
@@ -126,7 +128,7 @@ function renderPage() {
         </footer>
     `;
 
-    app.classList.add("is-ready");
+  app.classList.add("is-ready");
 }
 
 /**
@@ -137,9 +139,9 @@ function renderPage() {
  * @returns {string} 导航 HTML 字符串。
  */
 function renderNavigation(navigation) {
-    return navigation
-        .map((item) => `<a href="${item.href}">${item.label}</a>`)
-        .join("");
+  return navigation
+    .map((item) => `<a href="${item.href}">${item.label}</a>`)
+    .join("");
 }
 
 /**
@@ -150,9 +152,9 @@ function renderNavigation(navigation) {
  * @returns {string} 数据 HTML 字符串。
  */
 function renderStats(stats) {
-    return stats
-        .map((item) => `<div><dt>${item.value}</dt><dd>${item.label}</dd></div>`)
-        .join("");
+  return stats
+    .map((item) => `<div><dt>${item.value}</dt><dd>${item.label}</dd></div>`)
+    .join("");
 }
 
 /**
@@ -163,9 +165,11 @@ function renderStats(stats) {
  * @returns {string} 训练 HTML 字符串。
  */
 function renderTraining(items) {
-    return items
-        .map((item) => `<article><h3>${item.title}</h3><p>${item.text}</p></article>`)
-        .join("");
+  return items
+    .map(
+      (item) => `<article><h3>${item.title}</h3><p>${item.text}</p></article>`,
+    )
+    .join("");
 }
 
 /**
@@ -176,9 +180,12 @@ function renderTraining(items) {
  * @returns {string} 时间安排 HTML 字符串。
  */
 function renderSchedule(items) {
-    return items
-        .map((item) => `<div><span>${item.label}</span><strong>${item.value}</strong></div>`)
-        .join("");
+  return items
+    .map(
+      (item) =>
+        `<div><span>${item.label}</span><strong>${item.value}</strong></div>`,
+    )
+    .join("");
 }
 
 /**
@@ -188,7 +195,7 @@ function renderSchedule(items) {
  * @returns {string} 列表 HTML 字符串。
  */
 function renderStrengths(items) {
-    return items.map((item) => `<li>${item}</li>`).join("");
+  return items.map((item) => `<li>${item}</li>`).join("");
 }
 
 /**
@@ -199,9 +206,12 @@ function renderStrengths(items) {
  * @returns {string} 联系方式 HTML 字符串。
  */
 function renderContacts(contacts) {
-    return contacts
-        .map((item) => `<div><span>${item.label}</span><strong>${item.value}</strong></div>`)
-        .join("");
+  return contacts
+    .map(
+      (item) =>
+        `<div><span>${item.label}</span><strong>${item.value}</strong></div>`,
+    )
+    .join("");
 }
 
 /**
@@ -212,9 +222,9 @@ function renderContacts(contacts) {
  * @returns {void}
  */
 function mountImagesAsync(assets) {
-    loadAndMountImage(".brand-logo", assets.logo, "site-logo");
-    loadAndMountImage(".hero-image", assets.hero, "hero-img");
-    loadAndMountImage(".footer-logo", assets.partnerLogo, "partner-logo");
+  loadAndMountImage(".brand-logo", assets.logo, "site-logo");
+  loadAndMountImage(".hero-image", assets.hero, "hero-img");
+  loadAndMountImage(".footer-logo", assets.partnerLogo, "partner-logo");
 }
 
 /**
@@ -230,17 +240,17 @@ function mountImagesAsync(assets) {
  * 图片挂载任务。
  */
 async function loadAndMountImage(selector, asset, className) {
-    const target = document.querySelector(selector);
+  const target = document.querySelector(selector);
 
-    try {
-        const image = await loadImage(asset.path, asset.alt);
+  try {
+    const image = await loadImage(asset.path, asset.alt);
 
-        image.className = className;
-        target.classList.add("is-loaded");
-        target.append(image);
-    } catch {
-        target.classList.add("is-failed");
-    }
+    image.className = className;
+    target.classList.add("is-loaded");
+    target.append(image);
+  } catch {
+    target.classList.add("is-failed");
+  }
 }
 
 /**
@@ -249,7 +259,7 @@ async function loadAndMountImage(selector, asset, className) {
  * @returns {void}
  */
 function renderFallback() {
-    app.innerHTML = `
+  app.innerHTML = `
         <main class="fallback">
             <h1>${siteContent.title}</h1>
             <p>页面资源加载失败，请稍后刷新重试。</p>
