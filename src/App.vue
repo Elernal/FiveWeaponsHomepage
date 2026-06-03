@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, reactive } from "vue";
-import { siteContent } from "./content/siteContent.js";
-import { getPublicAssetPath, loadImage } from "./utils/imageLoader.js";
+import { siteContent, type ImageAsset } from "./content/siteContent";
+import { getPublicAssetPath, loadImage } from "./utils/imageLoader";
 
 const imageSources = reactive({
     logo: "",
@@ -21,7 +21,7 @@ const titleImagePath = computed(() => getPublicAssetPath("images/title.png"));
  * @returns {Promise<void>}
  * 图片加载任务。
  */
-async function loadAssetImage(key, asset) {
+async function loadAssetImage(key: keyof typeof imageSources, asset: ImageAsset): Promise<void> {
     try {
         const image = await loadImage(asset.path, asset.alt);
 

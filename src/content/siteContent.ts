@@ -1,4 +1,68 @@
-export const siteContent = {
+export interface ImageAsset {
+    path: string;
+    alt: string;
+}
+
+export interface NavigationItem {
+    label: string;
+    href: string;
+}
+
+export interface HeroStat {
+    value: string;
+    label: string;
+}
+
+export interface TextBlock {
+    title: string;
+    text: string;
+}
+
+export interface LabeledValue {
+    label: string;
+    value: string;
+}
+
+export interface SiteContent {
+    title: string;
+    subtitle: string;
+    assets: {
+        logo: ImageAsset;
+        partnerLogo: ImageAsset;
+        hero: ImageAsset;
+    };
+    navigation: NavigationItem[];
+    hero: {
+        eyebrow: string;
+        title: string;
+        summary: string;
+        primaryCta: string;
+        secondaryCta: string;
+        stats: HeroStat[];
+    };
+    intro: {
+        heading: string;
+        body: string;
+    };
+    training: TextBlock[];
+    schedule: LabeledValue[];
+    strengths: string[];
+    safety: {
+        heading: string;
+        points: string[];
+    };
+    join: {
+        heading: string;
+        body: string;
+        contacts: LabeledValue[];
+    };
+    footer: {
+        brand: string;
+        note: string;
+    };
+}
+
+export const siteContent: SiteContent = {
     title: "福建五兵团练营",
     subtitle: "HEMA 俱乐部",
     assets: {

@@ -1,4 +1,4 @@
-import { logger } from "./logger.js";
+import { logger } from "./logger";
 
 /**
  * 根据 Vite base 拼接 public 资源路径。
@@ -9,7 +9,10 @@ import { logger } from "./logger.js";
  * Vite 注入的基础路径。
  * @returns {string} 可用于浏览器访问的资源路径。
  */
-export function getPublicAssetPath(assetPath, baseUrl = import.meta.env.BASE_URL) {
+export function getPublicAssetPath(
+    assetPath: string,
+    baseUrl = import.meta.env.BASE_URL
+): string {
     return `${baseUrl}${assetPath}`;
 }
 
@@ -23,7 +26,7 @@ export function getPublicAssetPath(assetPath, baseUrl = import.meta.env.BASE_URL
  * @returns {Promise<HTMLImageElement>}
  * 加载完成的图片元素。
  */
-export function loadImage(assetPath, alt = "") {
+export function loadImage(assetPath: string, alt = ""): Promise<HTMLImageElement> {
     const source = getPublicAssetPath(assetPath);
 
     return new Promise((resolve, reject) => {

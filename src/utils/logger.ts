@@ -5,7 +5,7 @@
  * @param {unknown} details 错误详情。
  * @returns {void}
  */
-function logError(message, details) {
+function logError(message: string, details: unknown): void {
     console.error(`[FiveWeaponsHomepage] ${message}`, details);
 }
 
@@ -16,11 +16,16 @@ function logError(message, details) {
  * @param {unknown} details 信息详情。
  * @returns {void}
  */
-function logInfo(message, details) {
+function logInfo(message: string, details: unknown): void {
     console.info(`[FiveWeaponsHomepage] ${message}`, details);
 }
 
-export const logger = {
+export interface Logger {
+    error: (message: string, details: unknown) => void;
+    info: (message: string, details: unknown) => void;
+}
+
+export const logger: Logger = {
     error: logError,
     info: logInfo
 };

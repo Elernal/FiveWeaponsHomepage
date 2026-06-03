@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { siteContent } from "../src/content/siteContent.js";
+import { siteContent } from "../src/content/siteContent";
 
 describe("siteContent", () => {
     it("包含官网必要区块", () => {

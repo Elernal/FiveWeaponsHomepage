@@ -1,25 +1,36 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getPublicAssetPath, loadImage } from "../src/utils/imageLoader.js";
-import { logger } from "../src/utils/logger.js";
+import { getPublicAssetPath, loadImage } from "../src/utils/imageLoader";
+import { logger } from "../src/utils/logger";
+
+type ImageEventName = "load" | "error";
 
 class MockImage {
-    /**
-     * 创建图片 mock。
-     */
-    constructor() {
-        this.alt = "";
-        this.listeners = {};
-    }
+    alt = "";
+    currentSource = "";
+    listeners: Partial<Record<ImageEventName, () => void>> = {};
 
     /**
      * 记录图片事件监听。
      *
      * @param {string} type 事件类型。
-     * @param {Function} handler 事件回调。
+     * @param {EventListenerOrEventListenerObject} handler 回调。
      * @returns {void}
      */
-    addEventListener(type, handler) {
-        this.listeners[type] = handler;
+    addEventListener(type: string, handler: EventListenerOrEventListenerObject): void {
+        if (type !== "load" && type !== "error") {
+            return;
+        }
+
+        this.listeners[type] = () => {
+            const event = new Event(type);
+
+            if (typeof handler === "function") {
+                handler(event);
+                return;
+            }
+
+            handler.handleEvent(event);
+        };
     }
 
     /**
@@ -27,15 +38,15 @@ class MockImage {
      *
      * @param {string} value 图片地址。
      */
-    set src(value) {
+    set src(value: string) {
         this.currentSource = value;
 
         if (value.includes("broken")) {
-            this.listeners.error();
+            this.listeners.error?.();
             return;
         }
 
-        this.listeners.load();
+        this.listeners.load?.();
     }
 
     /**
@@ -43,13 +54,14 @@ class MockImage {
      *
      * @returns {string} 图片地址。
      */
-    get src() {
+    get src(): string {
         return this.currentSource;
     }
 }
 
 describe("imageLoader", () => {
     afterEach(() => {
+        vi.unstubAllGlobals();
         vi.restoreAllMocks();
     });
 
@@ -60,7 +72,7 @@ describe("imageLoader", () => {
     });
 
     it("成功时异步返回图片对象", async () => {
-        vi.stubGlobal("Image", MockImage);
+        vi.stubGlobal("Image", MockImage as unknown as typeof Image);
 
         const image = await loadImage("images/demo.png", "测试图片");
 
@@ -69,10 +81,12 @@ describe("imageLoader", () => {
     });
 
     it("失败时记录 logger 错误", async () => {
-        vi.stubGlobal("Image", MockImage);
+        vi.stubGlobal("Image", MockImage as unknown as typeof Image);
         const errorSpy = vi.spyOn(logger, "error").mockImplementation(() => {});
 
-        await expect(loadImage("images/broken.png", "错误图片")).rejects.toThrow("图片加载失败");
+        await expect(loadImage("images/broken.png", "错误图片")).rejects.toThrow(
+            "图片加载失败"
+        );
         expect(errorSpy).toHaveBeenCalledOnce();
     });
 });
