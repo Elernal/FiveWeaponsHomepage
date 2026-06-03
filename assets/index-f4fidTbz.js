@@ -19,16 +19,18 @@
                 </div>
                 <div class="hero-content">
                     <p class="eyebrow">${e.hero.eyebrow}</p>
-                    <h1>${e.title}</h1>
-                    <p class="hero-subtitle">${e.hero.title}</p>
-                    <p class="hero-summary">${e.hero.summary}</p>
-                    <div class="hero-actions">
-                        <a class="button primary" href="#join">${e.hero.primaryCta}</a>
-                        <a class="button secondary" href="#schedule">
-                            ${e.hero.secondaryCta}
-                        </a>
+                    <img class="hero-img hero-content-img" src="images/title.png" alt="${e.title}" />
+                    <div class="hero-content-inner">
+                        <p class="hero-subtitle">${e.hero.title}</p>
+                        <p class="hero-summary">${e.hero.summary}</p>
+                        <dl class="hero-stats">${m(e.hero.stats)}</dl>
+                        <div class="hero-actions">
+                            <a class="button primary" href="#join">${e.hero.primaryCta}</a>
+                            <a class="button secondary" href="#schedule">
+                                ${e.hero.secondaryCta}
+                            </a>
+                        </div>
                     </div>
-                    <dl class="hero-stats">${m(e.hero.stats)}</dl>
                 </div>
             </section>
             <section class="section intro-section" aria-labelledby="intro-title">
