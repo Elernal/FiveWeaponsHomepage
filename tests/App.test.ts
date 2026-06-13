@@ -7,11 +7,17 @@ interface MockLoadedImage {
     src: string;
 }
 
+const loggerMocks = vi.hoisted(() => ({
+    error: vi.fn(),
+    info: vi.fn()
+}));
+
 const imageLoaderMocks = vi.hoisted(() => ({
-    getPublicAssetPath: vi.fn((assetPath: string) => {
-        return `/FiveWeaponsHomepage/${assetPath}`;
-    }),
     loadImage: vi.fn<(_path: string, _alt: string) => Promise<MockLoadedImage>>()
+}));
+
+vi.mock("../src/utils/logger", () => ({
+    logger: loggerMocks
 }));
 
 vi.mock("../src/utils/imageLoader", () => imageLoaderMocks);
@@ -28,7 +34,8 @@ async function waitForAsyncRender(): Promise<void> {
 
 describe("App", () => {
     beforeEach(() => {
-        imageLoaderMocks.getPublicAssetPath.mockClear();
+        loggerMocks.error.mockClear();
+        loggerMocks.info.mockClear();
         imageLoaderMocks.loadImage.mockReset();
         imageLoaderMocks.loadImage.mockImplementation((path: string, alt: string) => {
             return Promise.resolve({
@@ -38,15 +45,35 @@ describe("App", () => {
         });
     });
 
-    it("渲染官网核心内容", async () => {
+    it("渲染现代竞技风首页核心内容", async () => {
         const wrapper = mount(App);
 
         await waitForAsyncRender();
 
         expect(wrapper.text()).toContain("福建五兵团练营");
+        expect(wrapper.text()).toContain("汉服文化训练");
+        expect(wrapper.text()).toContain("HEMA 历史欧洲武术");
+        expect(wrapper.text()).toContain("训练路径");
         expect(wrapper.text()).toContain("加入训练群");
-        expect(wrapper.text()).toContain("训练内容");
-        expect(wrapper.text()).toContain("加入方式");
+    });
+
+    it("异步加载汉服和 HEMA 图片资源", async () => {
+        mount(App);
+
+        await waitForAsyncRender();
+
+        expect(imageLoaderMocks.loadImage).toHaveBeenCalledWith(
+            "images/hero-home-background.png",
+            expect.stringContaining("主页背景图")
+        );
+        expect(imageLoaderMocks.loadImage).toHaveBeenCalledWith(
+            "images/hanfu-culture-training.png",
+            expect.stringContaining("汉服")
+        );
+        expect(imageLoaderMocks.loadImage).toHaveBeenCalledWith(
+            "images/hero-hema-recruit.png",
+            expect.stringContaining("HEMA")
+        );
     });
 
     it("图片异步加载失败时仍保留正文内容", async () => {
@@ -56,9 +83,10 @@ describe("App", () => {
 
         await waitForAsyncRender();
 
-        expect(wrapper.text()).toContain("福建五兵团练营");
-        expect(wrapper.text()).toContain("加入训练群");
+        expect(wrapper.text()).toContain("汉服文化训练");
+        expect(wrapper.text()).toContain("HEMA 历史欧洲武术");
         expect(wrapper.find(".site-logo").exists()).toBe(false);
-        expect(wrapper.find(".hero-content-img").exists()).toBe(true);
+        expect(wrapper.find(".focus-card").exists()).toBe(true);
+        expect(loggerMocks.error).toHaveBeenCalled();
     });
 });
