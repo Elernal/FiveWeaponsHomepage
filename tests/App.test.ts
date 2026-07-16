@@ -1,26 +1,6 @@
 import { mount } from "@vue/test-utils";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "../src/App.vue";
-
-interface MockLoadedImage {
-    alt: string;
-    src: string;
-}
-
-const loggerMocks = vi.hoisted(() => ({
-    error: vi.fn(),
-    info: vi.fn()
-}));
-
-const imageLoaderMocks = vi.hoisted(() => ({
-    loadImage: vi.fn<(_path: string, _alt: string) => Promise<MockLoadedImage>>()
-}));
-
-vi.mock("../src/utils/logger", () => ({
-    logger: loggerMocks
-}));
-
-vi.mock("../src/utils/imageLoader", () => imageLoaderMocks);
 
 /**
  * 等待 Vue 挂载后的异步任务完成。
@@ -34,74 +14,65 @@ async function waitForAsyncRender(): Promise<void> {
 
 describe("App", () => {
     beforeEach(() => {
-        loggerMocks.error.mockClear();
-        loggerMocks.info.mockClear();
-        imageLoaderMocks.loadImage.mockReset();
-        imageLoaderMocks.loadImage.mockImplementation((path: string, alt: string) => {
-            return Promise.resolve({
-                alt,
-                src: `/FiveWeaponsHomepage/${path}`
-            });
-        });
+        vi.stubGlobal("scrollTo", vi.fn());
     });
 
-    it("渲染现代竞技风首页核心内容", async () => {
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    it("渲染参考图对应的首页核心模块", async () => {
         const wrapper = mount(App);
 
         await waitForAsyncRender();
 
-        expect(wrapper.text()).toContain("福建五兵 HEMA 历史剑术俱乐部");
-        expect(wrapper.text()).toContain("FIVE WEAPONS MILITIA BARRACK");
-        expect(wrapper.text()).toContain("汉服文化训练");
-        expect(wrapper.text()).toContain("HEMA 历史欧洲武术");
-        expect(wrapper.text()).toContain("训练路径");
-        expect(wrapper.text()).toContain("加入训练群");
+        expect(wrapper.text()).toContain("福建五兵");
+        expect(wrapper.text()).toContain("HEMA 历史剑术俱乐部");
+        expect(wrapper.text()).toContain("新人路径");
+        expect(wrapper.text()).toContain("本月活动");
+        expect(wrapper.text()).toContain("训练装备");
+        expect(wrapper.text()).toContain("课程体系");
+        expect(wrapper.text()).toContain("兵器知识");
     });
 
-    it("异步加载汉服和 HEMA 图片资源", async () => {
-        mount(App);
+    it("可以切换到 HEMA、汉服武备和活动相册视图", async () => {
+        const wrapper = mount(App);
 
-        await waitForAsyncRender();
+        await wrapper.get("nav").findAll("button")[1].trigger("click");
+        expect(wrapper.text()).toContain("什么是 HEMA");
+        expect(wrapper.text()).toContain("兵器训练方向");
 
-        expect(imageLoaderMocks.loadImage).toHaveBeenCalledWith(
-            "images/hero-home-background.png",
-            expect.stringContaining("主页背景图")
-        );
-        expect(imageLoaderMocks.loadImage).toHaveBeenCalledWith(
-            "images/hanfu-culture-training.png",
-            expect.stringContaining("汉服")
-        );
-        expect(imageLoaderMocks.loadImage).toHaveBeenCalledWith(
-            "images/hero-hema-recruit.png",
-            expect.stringContaining("HEMA")
-        );
+        await wrapper.get("nav").findAll("button")[2].trigger("click");
+        expect(wrapper.text()).toContain("汉服相关介绍图片展示");
+        expect(wrapper.text()).toContain("展示内容");
+
+        await wrapper.get("nav").findAll("button")[3].trigger("click");
+        expect(wrapper.text()).toContain("总体活动图片展示");
+        expect(wrapper.text()).toContain("近期活动");
     });
 
-    it("图片异步加载失败时仍保留正文内容", async () => {
-        imageLoaderMocks.loadImage.mockRejectedValue(new Error("load failed"));
+    it("活动相册支持按分类筛选", async () => {
+        const wrapper = mount(App);
 
+        await wrapper.get("nav").findAll("button")[3].trigger("click");
+        await wrapper.findAll(".filter-tabs button")[1].trigger("click");
+
+        const captions = wrapper.findAll(".gallery-grid figcaption").map((item) => item.text());
+
+        expect(captions).toContain("07.03长剑基础课");
+        expect(captions).toContain("07.17技术复盘");
+        expect(captions).not.toContain("07.06汉服武备开放日");
+    });
+
+    it("使用迁移后的真实图片资源和两行品牌页脚", async () => {
         const wrapper = mount(App);
 
         await waitForAsyncRender();
 
-        expect(wrapper.text()).toContain("汉服文化训练");
-        expect(wrapper.text()).toContain("HEMA 历史欧洲武术");
-        expect(wrapper.find(".site-logo").exists()).toBe(false);
-        expect(wrapper.find(".focus-card").exists()).toBe(true);
-        expect(loggerMocks.error).toHaveBeenCalled();
-    });
-
-    it("页脚复用主品牌标识并展示两行品牌文字", async () => {
-        const wrapper = mount(App);
-
-        await waitForAsyncRender();
-
-        expect(wrapper.find(".footer-brand-logo").attributes("src")).toBe(
-            "/FiveWeaponsHomepage/images/logo-five-weapons.jpg"
-        );
-        expect(wrapper.find(".footer-copy strong").text()).toBe(
+        expect(wrapper.find("img").attributes("src")).toContain("assets/club-logo-source.png");
+        expect(wrapper.find(".footer-brand strong").text()).toBe(
             "福建五兵 HEMA 历史剑术俱乐部"
         );
-        expect(wrapper.find(".footer-copy p").text()).toBe("FIVE WEAPONS MILITIA BARRACK");
+        expect(wrapper.find(".footer-brand span").text()).toBe("FIVE WEAPONS MILITIA BARRACK");
     });
 });
