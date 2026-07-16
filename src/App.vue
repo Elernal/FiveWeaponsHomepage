@@ -8,8 +8,7 @@ const imageSources = reactive({
     logo: "",
     heroBackground: "",
     hero: "",
-    hanfu: "",
-    partnerLogo: ""
+    hanfu: ""
 });
 
 /**
@@ -40,8 +39,7 @@ async function loadPageImages(): Promise<void> {
         loadAssetImage("logo", siteContent.assets.logo),
         loadAssetImage("heroBackground", siteContent.assets.heroBackground),
         loadAssetImage("hero", siteContent.assets.hero),
-        loadAssetImage("hanfu", siteContent.assets.hanfu),
-        loadAssetImage("partnerLogo", siteContent.assets.partnerLogo)
+        loadAssetImage("hanfu", siteContent.assets.hanfu)
     ]);
 }
 
@@ -79,6 +77,7 @@ onMounted(() => {
                     class="site-logo"
                     :src="imageSources.logo"
                     :alt="siteContent.assets.logo.alt"
+                    decoding="async"
                 />
             </span>
             <span class="brand-copy">
@@ -109,6 +108,7 @@ onMounted(() => {
                         class="hero-img"
                         :src="imageSources.heroBackground"
                         :alt="siteContent.assets.heroBackground.alt"
+                        decoding="async"
                     />
                 </span>
                 <div class="hero-shade"></div>
@@ -163,6 +163,8 @@ onMounted(() => {
                             v-if="getFocusImageSource(module)"
                             :src="getFocusImageSource(module)"
                             :alt="getFocusImageAlt(module)"
+                            loading="lazy"
+                            decoding="async"
                         />
                     </div>
                     <div class="focus-content">
@@ -253,15 +255,17 @@ onMounted(() => {
     </main>
 
     <footer class="site-footer">
-        <span class="footer-logo" :class="{ 'is-loaded': imageSources.partnerLogo }">
+        <span class="footer-logo" :class="{ 'is-loaded': imageSources.logo }">
             <img
-                v-if="imageSources.partnerLogo"
-                class="partner-logo"
-                :src="imageSources.partnerLogo"
-                :alt="siteContent.assets.partnerLogo.alt"
+                v-if="imageSources.logo"
+                class="footer-brand-logo"
+                :src="imageSources.logo"
+                :alt="siteContent.assets.logo.alt"
+                loading="lazy"
+                decoding="async"
             />
         </span>
-        <div>
+        <div class="footer-copy">
             <strong>{{ siteContent.footer.brand }}</strong>
             <p>{{ siteContent.footer.note }}</p>
         </div>

@@ -50,7 +50,8 @@ describe("App", () => {
 
         await waitForAsyncRender();
 
-        expect(wrapper.text()).toContain("福建五兵团练营");
+        expect(wrapper.text()).toContain("福建五兵 HEMA 历史剑术俱乐部");
+        expect(wrapper.text()).toContain("FIVE WEAPONS MILITIA BARRACK");
         expect(wrapper.text()).toContain("汉服文化训练");
         expect(wrapper.text()).toContain("HEMA 历史欧洲武术");
         expect(wrapper.text()).toContain("训练路径");
@@ -88,5 +89,19 @@ describe("App", () => {
         expect(wrapper.find(".site-logo").exists()).toBe(false);
         expect(wrapper.find(".focus-card").exists()).toBe(true);
         expect(loggerMocks.error).toHaveBeenCalled();
+    });
+
+    it("页脚复用主品牌标识并展示两行品牌文字", async () => {
+        const wrapper = mount(App);
+
+        await waitForAsyncRender();
+
+        expect(wrapper.find(".footer-brand-logo").attributes("src")).toBe(
+            "/FiveWeaponsHomepage/images/logo-five-weapons.jpg"
+        );
+        expect(wrapper.find(".footer-copy strong").text()).toBe(
+            "福建五兵 HEMA 历史剑术俱乐部"
+        );
+        expect(wrapper.find(".footer-copy p").text()).toBe("FIVE WEAPONS MILITIA BARRACK");
     });
 });

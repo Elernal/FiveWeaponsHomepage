@@ -41,7 +41,6 @@ export interface SiteContent {
     subtitle: string;
     assets: {
         logo: ImageAsset;
-        partnerLogo: ImageAsset;
         heroBackground: ImageAsset;
         hero: ImageAsset;
         hanfu: ImageAsset;
@@ -83,16 +82,12 @@ export interface SiteContent {
 }
 
 export const siteContent: SiteContent = {
-    title: "福建五兵团练营",
-    subtitle: "Hanfu Culture / HEMA Club",
+    title: "福建五兵 HEMA 历史剑术俱乐部",
+    subtitle: "FIVE WEAPONS MILITIA BARRACK",
     assets: {
         logo: {
             path: "images/logo-five-weapons.jpg",
-            alt: "福建五兵团练营标识"
-        },
-        partnerLogo: {
-            path: "images/logo-black-tigers.jpg",
-            alt: "Black Tigers 标识"
+            alt: "福建五兵 HEMA 历史剑术俱乐部标识"
         },
         heroBackground: {
             path: "images/hero-home-background.png",
@@ -232,7 +227,7 @@ export const siteContent: SiteContent = {
         ]
     },
     footer: {
-        brand: "福建五兵团练营",
-        note: "Black Tigers 标识作为社群历史或关联标识预留展示。"
+        brand: "福建五兵 HEMA 历史剑术俱乐部",
+        note: "FIVE WEAPONS MILITIA BARRACK"
     }
 };
