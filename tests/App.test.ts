@@ -64,15 +64,13 @@ describe("App", () => {
         expect(captions).not.toContain("07.06汉服武备开放日");
     });
 
-    it("使用迁移后的真实图片资源和两行品牌页脚", async () => {
+    it("使用迁移后的真实图片资源和单行品牌页脚", async () => {
         const wrapper = mount(App);
 
         await waitForAsyncRender();
 
         expect(wrapper.find("img").attributes("src")).toContain("assets/club-logo-source.png");
-        expect(wrapper.find(".footer-brand strong").text()).toBe(
-            "福建五兵 HEMA 历史剑术俱乐部"
-        );
-        expect(wrapper.find(".footer-brand span").text()).toBe("FIVE WEAPONS MILITIA BARRACK");
+        expect(wrapper.find(".footer-brand strong").text()).toBe("福建五兵团练营");
+        expect(wrapper.find(".footer-brand span").exists()).toBe(false);
     });
 });

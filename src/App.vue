@@ -625,8 +625,7 @@ onUnmounted(() => {
         <div class="footer-brand">
             <img :src="assetUrl('club-logo-source.png')" alt="" loading="lazy" decoding="async" />
             <div>
-                <strong>福建五兵 HEMA 历史剑术俱乐部</strong>
-                <span>FIVE WEAPONS MILITIA BARRACK</span>
+                <strong>福建五兵团练营</strong>
             </div>
         </div>
         <nav aria-label="页脚导航">
