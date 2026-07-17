@@ -26,7 +26,7 @@ describe("App", () => {
 
         await waitForAsyncRender();
 
-        expect(wrapper.text()).toContain("福建五兵");
+        expect(wrapper.find(".brand strong").text()).toBe("福建五兵团练营");
         expect(wrapper.text()).toContain("HEMA 历史剑术俱乐部");
         expect(wrapper.text()).toContain("新人路径");
         expect(wrapper.text()).toContain("本月活动");
@@ -70,6 +70,7 @@ describe("App", () => {
         await waitForAsyncRender();
 
         expect(wrapper.find("img").attributes("src")).toContain("assets/club-logo-source.png");
+        expect(wrapper.find(".brand strong").text()).toBe("福建五兵团练营");
         expect(wrapper.find(".footer-brand strong").text()).toBe("福建五兵团练营");
         expect(wrapper.find(".footer-brand span").exists()).toBe(false);
     });

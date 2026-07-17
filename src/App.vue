@@ -359,7 +359,7 @@ onUnmounted(() => {
         <button class="brand" type="button" aria-label="福建五兵首页" @click="setPage('home')">
             <img :src="assetUrl('club-logo-source.png')" alt="" decoding="async" />
             <span>
-                <strong>福建五兵</strong>
+                <strong>福建五兵团练营</strong>
                 <small>Five Weapons Militia Barrack</small>
             </span>
         </button>
