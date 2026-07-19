@@ -27,6 +27,7 @@ describe("App", () => {
         await waitForAsyncRender();
 
         expect(wrapper.find(".brand strong").text()).toBe("福建五兵团练营");
+        expect(wrapper.find(".brand small").text()).toBe("Five Weapons Militia Barrack");
         expect(wrapper.text()).toContain("HEMA 历史剑术俱乐部");
         expect(wrapper.text()).toContain("新人路径");
         expect(wrapper.text()).toContain("本月活动");
@@ -64,7 +65,7 @@ describe("App", () => {
         expect(captions).not.toContain("07.06汉服武备开放日");
     });
 
-    it("使用迁移后的真实图片资源和单行品牌页脚", async () => {
+    it("使用迁移后的真实图片资源和品牌页脚", async () => {
         const wrapper = mount(App);
 
         await waitForAsyncRender();
@@ -72,6 +73,6 @@ describe("App", () => {
         expect(wrapper.find("img").attributes("src")).toContain("assets/club-logo-source.png");
         expect(wrapper.find(".brand strong").text()).toBe("福建五兵团练营");
         expect(wrapper.find(".footer-brand strong").text()).toBe("福建五兵团练营");
-        expect(wrapper.find(".footer-brand span").exists()).toBe(false);
+        expect(wrapper.find(".footer-brand span").text()).toBe("Five Weapons Militia Barrack");
     });
 });

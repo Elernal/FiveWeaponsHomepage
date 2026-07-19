@@ -626,6 +626,7 @@ onUnmounted(() => {
             <img :src="assetUrl('club-logo-source.png')" alt="" loading="lazy" decoding="async" />
             <div>
                 <strong>福建五兵团练营</strong>
+                <span>Five Weapons Militia Barrack</span>
             </div>
         </div>
         <nav aria-label="页脚导航">
